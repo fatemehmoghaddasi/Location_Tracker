@@ -53,10 +53,10 @@ import com.example.locationtracker.ui.theme.LightBlue
 import com.example.locationtracker.ui.theme.PrimaryBlue
 import com.example.locationtracker.ui.theme.White
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun SplashScreen(onNavigateNext: () -> Unit = {}) {
+fun SplashScreen(onNavigateToHome: () -> Unit = {}) {
     var visible by remember { mutableStateOf(false) }
 
     // انیمیشن ورود لوگو
@@ -103,8 +103,8 @@ fun SplashScreen(onNavigateNext: () -> Unit = {}) {
 
     LaunchedEffect(Unit) {
         visible = true
-        delay(2400.milliseconds)
-        onNavigateNext()
+        delay(2.seconds)
+        onNavigateToHome()
     }
     Box(
         modifier = Modifier

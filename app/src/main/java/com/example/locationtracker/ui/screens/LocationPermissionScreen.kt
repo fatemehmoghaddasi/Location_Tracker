@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.example.locationtracker.R
 
 @Composable
-fun LocationPermission() {
+fun LocationPermission(onBackClick : () -> Unit) {
 
     var showDialog by remember { mutableStateOf(false) }
     var hasLocationPermission by remember { mutableStateOf<Boolean?>(null) }
@@ -62,6 +66,19 @@ fun LocationPermission() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        IconButton(
+            onClick = {onBackClick()},
+            modifier = Modifier
+                .systemBarsPadding()
+                .align(Alignment.TopStart)
+                .padding(4.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "back",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
         Column(
             modifier = Modifier
                 .systemBarsPadding()
@@ -69,12 +86,12 @@ fun LocationPermission() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Image(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .size(200.dp),
+                    .size(260.dp),
                 painter = painterResource(
-                    R.drawable.transparent_address_mobile_60e8218b76eaa8_4301763216258256754871
+                    R.drawable.the_importance_of_localization__1_
                 ),
                 contentDescription = "image"
             )
@@ -135,12 +152,14 @@ fun LocationPermission() {
                             showDialog = false
 
                             permissionLauncher.launch(
+
                                 arrayOf(
                                     Manifest.permission.ACCESS_FINE_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,
                                 )
                             )
                         }
+
                     ) {
                         Text("Yes")
                     }
@@ -158,5 +177,16 @@ fun LocationPermission() {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
