@@ -1,17 +1,23 @@
 package com.example.locationtracker.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.example.locationtracker.ui.screens.HistoryScreen
 import com.example.locationtracker.ui.screens.HomeScreen
 import com.example.locationtracker.ui.screens.LocationPermission
+import com.example.locationtracker.ui.screens.MapScreen
 import com.example.locationtracker.ui.screens.SplashScreen
 import kotlinx.serialization.Serializable
 
 @Composable
-fun Nav() {
-    val navController = rememberNavController()
+fun Nav(
+    navController : NavHostController,
+    modifier: Modifier = Modifier
+) {
+
     NavHost(
         navController = navController,
         startDestination = SplashScreenRoute
@@ -30,6 +36,12 @@ fun Nav() {
                 onBackClick = { navController.popBackStack() }
             )
         }
+        composable<MapScreenRoute>{
+            MapScreen()
+        }
+        composable<HistoryScreenRoute>{
+            HistoryScreen()
+        }
     }
 }
 
@@ -42,3 +54,9 @@ data object HomeScreenRoute
 
 @Serializable
 data object LocationPermissionRoute
+
+@Serializable
+data object MapScreenRoute
+
+@Serializable
+data object HistoryScreenRoute
