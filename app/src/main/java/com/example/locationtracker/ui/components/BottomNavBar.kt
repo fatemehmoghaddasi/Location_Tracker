@@ -12,6 +12,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.locationtracker.navigation.HistoryScreenRoute
 import com.example.locationtracker.navigation.HomeScreenRoute
 import com.example.locationtracker.navigation.MapScreenRoute
+import com.example.locationtracker.ui.theme.Cream
+import com.example.locationtracker.ui.theme.LightBlue
 
 @Composable
 fun BottomNavBar(
@@ -19,7 +21,10 @@ fun BottomNavBar(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    NavigationBar {
+    NavigationBar(
+        containerColor  = LightBlue,
+        contentColor = Cream
+    ) {
         bottomNavItems.forEach { item ->
             NavigationBarItem(
                 selected = when (item.route) {
@@ -52,3 +57,4 @@ fun BottomNavBar(
         }
     }
 }
+
