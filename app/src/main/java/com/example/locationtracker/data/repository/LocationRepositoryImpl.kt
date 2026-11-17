@@ -4,10 +4,11 @@ import com.example.locationtracker.data.local.dao.LocationDao
 import com.example.locationtracker.data.local.entity.mapToLocationModel
 import com.example.locationtracker.ui.model.LocationModel
 import com.example.locationtracker.ui.model.mapToLocationEntity
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class LocationRepositoryImpl(private val locationDao: LocationDao) : LocationRepository {
+class LocationRepositoryImpl@Inject constructor(private val locationDao: LocationDao) : LocationRepository {
 
     override fun getAllLocations(): Flow<List<LocationModel>> {
         return locationDao.getAllLocations().map { entities ->
