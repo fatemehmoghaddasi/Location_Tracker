@@ -1,4 +1,4 @@
-package com.example.locationtracker.ui.screens
+package com.example.locationtracker.ui.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -14,14 +14,22 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.locationtracker.R
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+) {
+val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +53,7 @@ fun HomeScreen() {
                     .size(60.dp),
                 alignment = Alignment.Center,
                 painter = painterResource(
-                    com.example.locationtracker.R.drawable._5690312
+                    R.drawable._5690312
                 ),
                 contentDescription = "image"
             )
@@ -74,5 +82,6 @@ fun HomeScreen() {
         }
     }
 }
+
 
 

@@ -5,11 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.locationtracker.ui.screens.HistoryScreen
-import com.example.locationtracker.ui.screens.HomeScreen
 import com.example.locationtracker.ui.screens.LocationPermission
 import com.example.locationtracker.ui.screens.MapScreen
 import com.example.locationtracker.ui.screens.SplashScreen
+import com.example.locationtracker.ui.screens.history.HistoryScreen
+import com.example.locationtracker.ui.screens.home.HomeScreen
 import kotlinx.serialization.Serializable
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.locationtracker.ui.screens
+package com.example.locationtracker.ui.screens.history
 
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Text
