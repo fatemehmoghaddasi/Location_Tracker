@@ -42,7 +42,7 @@ import com.example.locationtracker.R
 @Composable
 fun LocationPermission(
     onBackClick : () -> Unit,
-    //onPermissionGranted: () -> Unit
+    onPermissionGranted: () -> Unit
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
@@ -58,7 +58,7 @@ fun LocationPermission(
         if (fineLocation || coarseLocation) {
             //permission Granted
             hasLocationPermission = true
-           // onPermissionGranted()
+            onPermissionGranted()
         } else {
             //permission denied
             hasLocationPermission = false

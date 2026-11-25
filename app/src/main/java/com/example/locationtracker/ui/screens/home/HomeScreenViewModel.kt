@@ -24,6 +24,14 @@ class HomeScreenViewModel @Inject constructor(
 
     init {
         getLastLocation()
+
+        viewModelScope.launch {
+            locationServiceManager.isTracking.collect { isTracking ->
+                _uiState.update {
+                    it.copy(isTracking = isTracking)
+                }
+            }
+        }
     }
 
     private fun getLastLocation() {
@@ -37,21 +45,24 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
     }
+
     fun startTracking() {
         locationServiceManager.startLocationService()
 
-        _uiState.update {
-            it.copy(isTracking = true)
-        }
+        //_uiState.update {
+        // it.copy(isTracking = true)
+        // }
     }
 
     fun stopTracking() {
         locationServiceManager.stopLocationService()
 
-        _uiState.update {
-            it.copy(isTracking = false)
-        }
+        // _uiState.update {
+        //it.copy(isTracking = false)
+        //}
     }
 
 }
+
+
 

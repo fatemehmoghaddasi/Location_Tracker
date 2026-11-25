@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun Nav(
-    navController : NavHostController,
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
 
@@ -39,24 +39,30 @@ fun Nav(
             HomeScreen(
                 onStartTrackingClick = {
                     navController.navigate(LocationPermissionRoute)
-                                       },
-                    onStopTrackingClick = {
-                        // اینجا فعلاً سرویس رو متوقف می‌کنیم
-                    }
+                },
+                permissionGranted = permissionGranted,
+                onPermissionResultHandled = {
+                    backStackEntry.savedStateHandle["location_permission_granted"] = false
+                }
             )
         }
         composable<LocationPermissionRoute> {
             LocationPermission(
                 onBackClick = {
-                    navController.navigate(HomeScreenRoute)
+                    navController.popBackStack()
+                },
+                onPermissionGranted = {
+                    navController.previousBackStackEntry?.savedStateHandle
+                        ?.set("location_permission_granted", true)
+                    navController.popBackStack()
                 }
 
             )
         }
-        composable<MapScreenRoute>{
+        composable<MapScreenRoute> {
             MapScreen()
         }
-        composable<HistoryScreenRoute>{
+        composable<HistoryScreenRoute> {
             HistoryScreen()
         }
     }

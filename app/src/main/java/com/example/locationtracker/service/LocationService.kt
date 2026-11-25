@@ -4,8 +4,11 @@ import android.Manifest
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import com.example.locationtracker.data.repository.LocationRepository
 import com.example.locationtracker.notification.NotificationHelper
@@ -29,6 +32,9 @@ class LocationService : Service() {
 
     @Inject
     lateinit var locationRepository: LocationRepository
+
+    @Inject
+    lateinit var locationServiceManager: LocationServiceManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var locationRequest: LocationRequest
@@ -37,6 +43,7 @@ class LocationService : Service() {
 
     private val serviceScope =
         CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var isTracking = false        //جلوگیری از ثبت درخواست تکراری لوکیشن
 
     override fun onCreate() {
         super.onCreate()
@@ -46,7 +53,9 @@ class LocationService : Service() {
         locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
             30 * 60 * 1000L
-        ).build()
+        )
+            .setMinUpdateIntervalMillis(30 * 60 * 1000L)
+            .build()
         locationCallback = object : LocationCallback() {
 
             override fun onLocationResult(locationResult: LocationResult) {
@@ -85,16 +94,31 @@ class LocationService : Service() {
     }
 
     private fun startLocationUpdates() {
-        if (!hasLocationPermission()) return
+        if (isTracking) return
+
+        if (!hasLocationPermission()) {
+            locationServiceManager.updateTrackingState(false)
+            stopSelf()
+            return
+        }
 
         try {
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
-            )
+            ).addOnSuccessListener {
+                isTracking = true
+                locationServiceManager.updateTrackingState(true)
+            }.addOnFailureListener {
+                it.printStackTrace()
+                locationServiceManager.updateTrackingState(false)
+                stopSelf()
+            }
         } catch (e: SecurityException) {
             e.printStackTrace()
+            locationServiceManager.updateTrackingState(false)
+            stopSelf()
         }
     }
 
@@ -104,11 +128,25 @@ class LocationService : Service() {
         flags: Int,
         startId: Int
     ): Int {
+
+        if (!hasLocationPermission()) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
         NotificationHelper.createNotificationChannel(this)
-        startForeground(
-            1,
-            NotificationHelper.createNotification(this)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ServiceCompat.startForeground(
+                this,
+                1,
+                NotificationHelper.createNotification(this),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            )
+        } else {
+            startForeground(
+                1,
+                NotificationHelper.createNotification(this)
+            )
+        }
         startLocationUpdates()
 
         return START_STICKY
@@ -116,6 +154,10 @@ class LocationService : Service() {
 
     override fun onDestroy() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
+
+        isTracking = false
+        locationServiceManager.updateTrackingState(false)
+
         serviceScope.cancel()
         super.onDestroy()
     }
@@ -124,6 +166,8 @@ class LocationService : Service() {
         return null
     }
 }
+
+
 
 
 
