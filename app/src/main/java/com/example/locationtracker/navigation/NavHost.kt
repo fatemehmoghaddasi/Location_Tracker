@@ -1,7 +1,9 @@
 package com.example.locationtracker.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,12 +30,27 @@ fun Nav(
                 onNavigateToHome = { navController.navigate(HomeScreenRoute) }
             )
         }
-        composable<HomeScreenRoute> {
-            HomeScreen()
+        composable<HomeScreenRoute> { backStackEntry ->
+
+            val permissionGranted by backStackEntry.savedStateHandle
+                .getStateFlow("location_permission_granted", false)
+                .collectAsStateWithLifecycle()
+
+            HomeScreen(
+                onStartTrackingClick = {
+                    navController.navigate(LocationPermissionRoute)
+                                       },
+                    onStopTrackingClick = {
+                        // اینجا فعلاً سرویس رو متوقف می‌کنیم
+                    }
+            )
         }
         composable<LocationPermissionRoute> {
             LocationPermission(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = {
+                    navController.navigate(HomeScreenRoute)
+                }
+
             )
         }
         composable<MapScreenRoute>{

@@ -40,7 +40,10 @@ import androidx.compose.ui.unit.sp
 import com.example.locationtracker.R
 
 @Composable
-fun LocationPermission(onBackClick : () -> Unit) {
+fun LocationPermission(
+    onBackClick : () -> Unit,
+    //onPermissionGranted: () -> Unit
+) {
 
     var showDialog by remember { mutableStateOf(false) }
     var hasLocationPermission by remember { mutableStateOf<Boolean?>(null) }
@@ -55,6 +58,7 @@ fun LocationPermission(onBackClick : () -> Unit) {
         if (fineLocation || coarseLocation) {
             //permission Granted
             hasLocationPermission = true
+           // onPermissionGranted()
         } else {
             //permission denied
             hasLocationPermission = false

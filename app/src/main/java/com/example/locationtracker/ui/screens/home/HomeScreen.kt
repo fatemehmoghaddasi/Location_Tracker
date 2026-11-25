@@ -26,9 +26,11 @@ import com.example.locationtracker.R
 
 @Composable
 fun HomeScreen(
+    onStartTrackingClick: () -> Unit,
+    onStopTrackingClick: () -> Unit,
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
-val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
@@ -65,14 +67,14 @@ val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             )
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = {}
+                onClick = { onStartTrackingClick() }
             ) {
                 Text(
                     text = "Start tracking"
                 )
             }
             Button(
-                onClick = {}
+                onClick = { viewModel.stopTracking() }
             ) {
                 Text(
                     text = "Stop tracking"
@@ -82,6 +84,7 @@ val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         }
     }
 }
+
 
 
 
