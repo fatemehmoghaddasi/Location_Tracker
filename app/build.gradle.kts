@@ -79,4 +79,6 @@ dependencies {
     implementation(libs.play.services.location)
 
     implementation("androidx.compose.material:material-icons-extended")
+
+    implementation(libs.maplibre.android)
 }

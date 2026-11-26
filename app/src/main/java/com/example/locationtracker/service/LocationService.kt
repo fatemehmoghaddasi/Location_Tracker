@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
@@ -19,6 +20,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -65,20 +67,34 @@ class LocationService : Service() {
 
                 if (location != null) {
                     // موقعیت جدید دریافت شده
-                    serviceScope.launch {
-                        locationRepository.insertLocation(
-                            LocationModel(
-                                id = 0,
-                                latitude = location.latitude,
-                                longitude = location.longitude,
-                                timestamp = location.time,
-                                accuracy = location.accuracy
-                            )
-                        )
-                    }
+                    //serviceScope.launch {
+                       // locationRepository.insertLocation(
+                          //  LocationModel(
+                               // id = 0,
+                              //  latitude = location.latitude,
+                               // longitude = location.longitude,
+                               // timestamp = location.time,
+                               // accuracy = location.accuracy
+                            //)
+                        //)
+                  // }
+                    saveLocation(location)
 
                 }
             }
+        }
+    }
+    private fun saveLocation(location: Location) {
+        serviceScope.launch {
+            locationRepository.insertLocation(
+                LocationModel(
+                    id = 0,
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    timestamp = location.time,
+                    accuracy = location.accuracy
+                )
+            )
         }
     }
 
@@ -103,6 +119,18 @@ class LocationService : Service() {
         }
 
         try {
+            val cancellationTokenSource = CancellationTokenSource()
+
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cancellationTokenSource.token
+            ).addOnSuccessListener { location ->
+                if (location != null) {
+                    saveLocation(location)
+                }
+            }.addOnFailureListener {
+                it.printStackTrace()
+            }
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
